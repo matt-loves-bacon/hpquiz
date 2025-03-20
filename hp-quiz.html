@@ -1,0 +1,455 @@
+
+<!doctype html>
+<html>
+<head>
+	<meta content="HP Quiz" property="og:title">
+	<meta content="Matt's HP Quiz" property="og:description">
+</description>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body >
+<div class = "game" id="game">
+	
+	
+</div>
+</body>
+
+<style>
+
+	
+	body{
+		background-color: #fffcc7;
+	}
+
+	body, button, input{
+		font-family: "Fira Mono Bold", monospace;
+		font-size: 100px;
+		color: #8f0404;
+	}
+
+	body input{
+		margin-top: 10px;
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+		text-align: center;
+		border-width: 10px;
+		background-color: #bffffd;
+		border-radius: 10px;
+		border: 10px solid #ff0000;
+		width: 500px;
+	}
+
+	body button.menubut{
+		margin-top: 10px;
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+		text-align: center;
+		
+	}
+
+	.greyed{
+		background-color: #ede2cc;
+		border: 10px solid #5c4b66;
+		color: #5c4b66;
+	}
+
+	.comp{
+		background-color: #c1f7bc;
+		border: 10px solid #2c0645;
+		color: #2c0645;
+	}
+
+	body button.levelbut{
+		margin-top: 10px;
+		margin-left: 10px;
+		height: 150px;
+		width:150px;
+		
+	}
+
+	body button.little{
+		margin-top: 200px;
+		font-size: 30px;
+		border-width: 3px;
+	}
+
+	p{
+		margin-top:0px;
+		margin-bottom:0px;
+	}
+
+	.tiny{
+		font-size: 16px;
+
+	}
+
+	.somewhattiny{
+		font-size: 25px;
+
+	}
+
+	.medium{
+		font-size: 60px;
+	}
+
+	.levelrow{
+		white-space:nowrap;
+	}
+
+	body button {
+		border-width: 10px;
+		background-color: #bffffd;
+		border-radius: 10px;
+		border: 10px solid #ff0000;
+	}
+
+	body div{
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+		text-align: center;
+	}
+
+	body button.topright{
+		margin-top: 0px;
+		font-size: 30px;
+		position:absolute;
+		top:10px;
+		right:10px;
+	}
+
+	body button.topright2{
+		margin-top: 0px;
+		font-size: 30px;
+		position:absolute;
+		top:10px;
+		right:210px;
+	}
+
+	body div.little{
+		font-size: 30px;
+		position:absolute;
+		top:10px;
+		left:10px;
+	}
+
+	textarea:focus, input:focus{
+    outline: none;
+}
+
+	</style>
+<script>
+
+levels = [
+   <!-- surnames (1-6)-->
+	{gram: "What's That Surname? <br> Harry ______", ans: "potter", unlocked:true},
+	{gram: "What's That Surname? <br> Remus ______", ans: "lupin", unlocked:true},
+	{gram: "What's That Surname? <br> Dean ______", ans: "thomas", unlocked:true},
+	{gram: "What's That Surname? <br> Regulus ______", ans: "black", unlocked:true},
+	{gram: "What's That Surname? <br> Florean ______", ans: "fortescue,fortesque", unlocked:true},
+	{gram: "What's That Surname? <br> Xenophilius ______", ans: "lovegood", unlocked:true},
+  {required: 4},
+  <!-- first used (7-14)-->
+    {gram: "Who first used this spell? <br> Wingardium leviosa", ans: "hermione,hermione granger"},
+	{gram: "Who first used this spell? <br> Sonorus", ans: "ludo bagman,ludovic bagman"},
+	{gram: "Who first used this spell? <br> Waddiwasi", ans: "lupin,remus lupin"},
+	{gram: "Who first used this spell? <br> Sectumsempra", ans: "harry,harry potter"},
+	{gram: "Who first used this spell? <br> Obliviate", ans: "lockhart,gilderoy lockhart"},
+	{gram: "Who first used this spell? <br> Avada kedavra", ans: "barty crouch,barty crouch jr,barty crouch junior,bartemius crouch junior"},
+	{gram: "Who first used this spell? <br> Colloportus", ans: "hermione,hermione granger"},
+	{gram: "Who first used this spell? <br> Densaugeo", ans: "malfoy,draco malfoy"},
+	{required: 13},
+	<!-- ordering 15 -->
+	{gram: "Put these characters in the order in which they first appear in the books <br> The answer should be a string of letters with no spaces. eg  GADKCE... <br> <br> A: Cho Chang <br> B: Arthur Weasley <br> C: Peter Pettigrew <br> D: Dumbledore <br> E: Quirrel <br> F: Sybill Trelawney <br> G: Snape <br> H: Mundungus Fletcher", ans: "decgbfah"},
+	{required: 14},
+	<!-- anagrams 16-20 -->
+	{gram: "Anagram: ghost war", ans: "hogwarts"},
+	{gram: "Anagram: crawl nave", ans: "ravenclaw"},
+	{gram: "Anagram: argonauts in rift", ans: "transfiguration"},
+	{gram: "Anagram: orbit smock", ans: "broomstick"},
+	{gram: "Anagram: overt mold", ans: "voldemort"},
+	{required: 19},
+    <!-- haiku 21-26 -->
+	{gram: "Haiku: <br> Dry your crying eyes, <br> Broken bones should hold no fear, <br> This will sort you out.", ans: "skele-gro,skelegro,skelegrow,skele-grow"},
+	{gram: "Haiku: <br> A giant spider, <br> Dementor with hand outstretched, <br> Snape in a silly hat.", ans: "boggart,bogart"},
+    {gram: "Haiku: <br> A club most elite, <br> Decapitation required, <br> Nick longs to join them.", ans: "headless hunt,the headless hunt"},
+	{gram: "Haiku: <br> Favoured social spot, <br> Triple transport in its name, <br> Serves a warming drink.", ans: "three broomsticks,the three broomsticks"},
+	{gram: "Haiku: <br> Six limbs and a tail, <br> The friendliest of his kind, <br> And a professor.", ans: "firenze"},
+	{gram: "Haiku: <br> More than a pebble, <br> Not owned by a sorcerer, <br> Young and oh so rich.", ans: "philosopher's stone,the philosopher's stone"},
+
+
+	{}
+	];
+cellsize = 10;
+
+curlevel = levels[0]
+progress = 0;
+
+save= ()=>{
+	localStorage.setItem('savedata-hp', [JSON.stringify([progress, levels])])
+}
+
+clearcookie= ()=>{
+	localStorage.removeItem('savedata-hp')
+}
+
+
+load = () => {
+	if(!localStorage.getItem('savedata-hp')) return false;
+	temp = JSON.parse(localStorage.getItem('savedata-hp'));
+	for(i in temp[1]){
+		if(levels[i].gram) {
+			temp[1][i].gram = levels[i].gram
+			temp[1][i].ans = levels[i].ans;
+		}
+	}
+		[progress, levels] = temp;
+	console.log()
+}
+
+load();
+
+onlylowercase = (s) => {
+	t = "";
+
+}
+
+hackthing = (x, y) => {
+							a = () => {
+								document.getElementById(x).style.visibility =y;
+							};
+							return a;
+						}
+
+loadlevelmenu = () => {
+	s = `<div class = "little">PROGRESS: ${progress}</div><button class = "little topright" id = "MAINSCREEN"> MAIN MENU </button> <div class="levelrow">`;
+	z = 0;
+	r = 0;
+	opac = 100;
+	firstanim = -1;
+	for(i in levels){
+		if(levels[i].gram){
+			z++;
+			levels[i].z = z;
+		}
+	}
+	z = 0;
+	for(i in levels){
+				if(opac <=0) continue;
+
+		z++;
+		level = levels[i];
+		if(level.gram)
+			if(progress >= r && !level.unlocked){
+
+					if(firstanim == -1) firstanim = i-1;
+					level.unlocked = true;
+					let uid = "unlocked"+i
+					s += `<button class="levelbut ${level.completed?"comp":""}" style=${opac>0?`opacity:${opac}%`:"display:none"} onclick="${r <= progress?`loadlevel(${i})`:'' }">
+							<div class="somewhattiny" id=${uid}>UNLOCKED! </div>
+							<div class="medium">	${ z}  </div>
+							<div class="tiny" ${level.completed?"":"style='visibility:hidden'"}>COMPLETED</div>
+
+						</button>`
+
+						setTimeout(hackthing(uid, "hidden"), 1)
+						setTimeout(hackthing(uid, ""), 100*(i-firstanim))
+			}else{
+				s += `<button class="levelbut  ${level.completed?"comp":""}" style=${opac>0?`opacity:${opac}%`:"display:none"} onclick="${r <= progress?`loadlevel(${i})`:'' }">
+							<div class="tiny" ${r > progress?"":"style='visibility:hidden'"}>${"REQUIRES " + r}</div>
+							<div class="medium">	${ z}  </div>
+							<div class="tiny" ${level.completed?"":"style='visibility:hidden'"}>COMPLETE</div>
+
+						</button>`
+						
+			}
+		else{
+			z--;
+			if(level.required){
+				r = level.required;
+				if(progress < r){
+					opac -= 32;
+				}
+			}
+			s += `</div><div class="levelrow">`
+		}
+	}
+	s += `</div>`
+	document.getElementById("game").innerHTML = s;
+	document.getElementById("MAINSCREEN").onclick = () => {
+		loadMAINSCREEN(0)
+
+	}
+}
+
+	loadending = () => {	
+	document.getElementById("game").innerHTML = `	
+	<div class = "little">PROGRESS: ${progress}</div>	
+	<button class = "little topright2" id = "LEVELCHART"> QUESTIONS </button> 	
+	<button class = "little topright" id = "MAINSCREEN"> MAIN MENU </button> <br>	
+	<div> GAME COMPLETE </div>	
+	<div> WELL DONE! </div>	
+	`
+
+	document.getElementById("LEVELCHART").onclick = () => {
+		loadlevelmenu()
+
+	}
+
+	document.getElementById("MAINSCREEN").onclick = () => {
+		loadMAINSCREEN()
+
+	}
+}
+
+
+loadlevel = (i) => {
+	if(!levels[i].gram){
+		loadlevelmenu();
+		return;
+	}
+	document.getElementById("game").innerHTML = `
+	<div class = "little">PROGRESS: ${progress}</div>
+	<button class = "little topright2" id = "LEVELCHART"> QUESTIONS </button> 
+	<button class = "little topright" id = "MAINSCREEN"> MAIN MENU</button> <br>
+	<div> ${levels[i].gram} </div>
+	<input id = "input"> </input><br>
+	<div>
+	<button class = "little ${i>0 && levels[i-1].gram?"":"greyed"}" id = "PREVIOUS" style="position: relative;top: 50%;transform: translateY(-50%);"> < PREVIOUS </button> 
+	${levels[i].z}
+	<button class = "little ${levels[i].gram != "SAYGOODBYE" && levels[i+1].gram?"":"greyed"}" id = "ULTERIOR" style="position: relative;top: 50%;transform: translateY(-50%);">  TRY NEXT! > </button>
+	</div>
+	
+
+	`
+	document.getElementById("input").focus();
+	document.getElementById("input").onchange = (e) => {
+		if(levels[i].ans.split(',').includes(e.target.value.toLowerCase()) || (levels[i].gram=="DDXXSINX" &&  e.target.value.toLowerCase().includes("+") && e.target.value.toLowerCase().includes("sin") &&  e.target.value.toLowerCase().includes("cos")) || (levels[i].gram == "BEEMOVIE" && e.target.value.toLowerCase().includes("it one of your special skills"))){
+			bootout = false;
+			if(!levels[i].completed){
+				progress++;
+
+				for(level of levels){
+					if(level.required == progress) bootout = true;
+				}
+			}
+			levels[i].completed = true;
+			save();
+			if(levels[i].gram == "SAYGOODBYE") loadending();
+			else loadlevel(i+1);
+		}else{
+			e.target.value = "";
+		}
+	}
+
+	document.getElementById("LEVELCHART").onclick = () => {
+		loadlevelmenu()
+
+	}
+
+	document.getElementById("MAINSCREEN").onclick = () => {
+		loadMAINSCREEN()
+
+	}
+
+	document.getElementById("PREVIOUS").onclick = () => {
+		if(i>0 && levels[i-1].gram)loadlevel(i-1)
+
+	}
+
+	document.getElementById("ULTERIOR").onclick = () => {
+		if(levels[i].gram != "FINALLVL" && levels[i+1].gram)loadlevel(i+1)
+
+	}
+}
+
+loadTHEOPTIONS = () => {
+	document.getElementById("game").innerHTML = `
+	<div> PROGRESS: ${progress} </div>
+	<button class = "menubut"id="CLEARPROGRESS"> CLEAR PROGRESS </button>
+	<button class = "menubut"id="CLEARCOOKIE"> CLEAR COOKIE </button>
+	<button class = "menubut"id="MAINSCREEN"> MAIN MENU </button>
+	`
+
+	document.getElementById("CLEARPROGRESS").onclick = () => {
+		progress = 0;
+		for(level of levels){
+			if(level.gram){
+				level.completed = false;
+				level.unlocked = false;
+			}
+		}
+		levels[0].unlocked = true;
+		loadTHEOPTIONS();
+	}
+	
+	document.getElementById("CLEARCOOKIE").onclick = () => {
+		clearcookie(0)
+
+	}
+
+	document.getElementById("MAINSCREEN").onclick = () => {
+		loadMAINSCREEN(0)
+
+	}
+}
+
+loadcredits = () => {
+	document.getElementById("game").innerHTML = `
+	<div> <b> THECREDITS</b></div>
+	<div> QUESTIONS BY </div>
+	<div> MATT </div>
+	<div class = "medium"> CODE UNAPOLOGETICALLY ADAPTED FROM </div>
+	<div class = "medium"> JACKLANCE </div>
+	<div class = "medium"> TEST BY </div>
+	<div class = "medium"> YOU? </div><br>
+
+	<button id="MAINSCREEN"> MAIN MENU </button>
+	`
+
+	document.getElementById("MAINSCREEN").onclick = () => {
+		loadMAINSCREEN(0)
+
+	}
+}
+
+loadMAINSCREEN = () => {
+	document.getElementById("game").innerHTML = `
+	<div> Matt's HP Quiz </div>
+	<button class = "menubut" id = "BEGINGAME!"> QUESTIONS</button>
+	<button class = "menubut ${progress == 0?"greyed":""}" id = "KEEPGOING!"> CONTINUE</button>
+	<button class = "menubut" id = "THEOPTIONS"> OPTIONS</button>
+	<button class = "menubut" id = "THEDETAILS"> INFO</button>
+	`
+
+	document.getElementById("BEGINGAME!").onclick = () => {
+		loadlevelmenu(0)
+
+	}
+
+	document.getElementById("KEEPGOING!").onclick = () => {
+		if(progress > 0) loadlevelmenu(0)
+
+	}
+
+document.getElementById("THEOPTIONS").onclick = () => {
+		loadTHEOPTIONS()
+
+	}
+
+	document.getElementById("THEDETAILS").onclick = () => {
+		loadcredits(0)
+
+	}
+}
+
+loadMAINSCREEN();
+
+
+
+</script>
+</html>
